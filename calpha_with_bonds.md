@@ -16,6 +16,7 @@ smog2 -i input.pdb -CA -dname CA
 #the syntax is the following
 #BOND chain_num1 res_num1 chain_num2 res_num2 energy_group
 #the chains will be identified with the TER lines(no need to include that in PDB)
+#The modification is to be done by the adjustpdb.py script in this repo
 #say the PDB has been saved in the name calpha2.pdb
 
 smog2 -i calpha2.pdb -t /home_b/gargi/smog-2.4.4/SBM_calpha -c CA.contacts.CG -warn 1 -dname CA.withbond
