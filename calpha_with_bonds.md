@@ -56,4 +56,4 @@ trjconv -s run.tpr -f traj.xtc -o mdnoPBC.xtc -pbc mol -center
 
 # creating a PDB file to view from simulation
 
-trjconv -s run.tpr -f mdnoPBC.xtc -dt 5 -o traj.pdb#Using SMOG-2.4.4 #sourcing SMOG
+trjconv -s run.tpr -f mdnoPBC.xtc -dt 5 -o traj.pdb
