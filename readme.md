@@ -3,7 +3,7 @@
 
 source /home_b/gargi/smog-2.4.4/configure.smog2
 
-## SMOG only works with PDB file having ATOM and HETATM lines, the PDB should be adjusted according to that using grep command
+**SMOG only works with PDB file having ATOM and HETATM lines, the PDB should be adjusted according to that using grep command**
 
 grep "^ATOM"|"^HETATM" 4gu3.pdb > 4gu3.atoms.pdb
 
