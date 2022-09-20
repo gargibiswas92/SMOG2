@@ -1,0 +1,47 @@
+source /software/gromacs2018.3/bin/GMXRC.bash
+
+source /home_c/lavi/smog2.dailybuild/configure.smog2 
+
+smog2 -i 4_tails_with_body_2_CA_new_muc2_4.pdb -t /home_c/lavi/smog2.dailybuild/share/templates/SBM_calpha_LB/ -dname muc_4_dimers_CA_3
+ 
+# I added connections between the first residue of each tail and the corresponding connection point in the body.
+
+# To modify dihedrals, I use the python script I wrote for that purpose: 
+
+# Now, define com pull groups. For each tail, I define 5 pull groups, and 1 target group, defined in .txt file in this folder. Need to apply all that to ndx file.
+
+
+
+gmx editconf -f muc_4_dimers_CA_3.gro -c -d 200 -o muc_4_dimers_center.gro -bt cubic 
+
+# Energy minimization
+
+gmx grompp -f calpha_min.mdp -c muc_4_dimers_center.gro -p muc_4_dimers_CA_di.top -o 4_dimers_min.tpr -maxwarn 1 -n dimers.ndx
+
+gmx mdrun -s 4_dimers_min.tpr -noddcheck -v -deffnm 4_dimers_min
+
+# prep for pulling
+
+gmx grompp -f pulling.mdp -c 4_dimers_min.gro -p muc_4_dimers_CA_di.top -o 4_dimers_pull.tpr -maxwarn 1 -n dimers.ndx
+
+# run the simulation:
+
+gmx mdrun -s 4_dimers_pull.tpr -deffnm 4_dimers_pull -nb gpu -v
+
+
+# stop pulling DDO.
+
+gmx grompp -f pulling_2.mdp -c 4_dimers_pull_2.5ns.gro -p muc_4_dimers_CA_di.top -o 4_dimers_pull_2.tpr -maxwarn 1 -n dimers.ndx
+
+gmx mdrun -s 4_dimers_pull_2.tpr -deffnm 4_dimers_pull_2 -nb gpu -v
+
+
+gmx grompp -f pulling_3.mdp -c 4_dimers_pull_2_900ps.gro -p muc_4_dimers_CA_di.top -o 4_dimers_pull_3.tpr -maxwarn 1 -n dimers.ndx
+
+gmx mdrun -s 4_dimers_pull_3.tpr -deffnm 4_dimers_pull_2 -nb gpu -v
+
+# Now run at T=80 for 100 ns: 
+
+gmx grompp -f 4dimers_T80.mdp -c 4_dimers_pull_2.gro -p muc_4_dimers_CA_di.top -o 4_dimers_80.tpr -maxwarn 1 -n dimers.ndx
+
+gmx grompp -f 4dimers_T100.mdp -c 4_dimers_pull_2.gro -p muc_4_dimers_CA_di.top -o 4_dimers_100.tpr -maxwarn 1 -n dimers.ndx
