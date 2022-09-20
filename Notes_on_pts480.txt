@@ -1,0 +1,44 @@
+﻿1. The initial structure is energy minimized using SPDBV
+2. The .gro and .top files are generated using SMOG
+
+smog2 -i input.pdb -CA -dname hydr
+
+#generate a table file for 10-12 potential
+
+smog_tablegen -N 10 -M 12 -tl 20.0 -table table.xvg
+
+$$$$$$$ I wanted the nonbonded interactions would be like below:
+So I put the in the extras file nonbond.extras
+
+nonbond_params < NB_V   NB_V    1       0.046656        0.0
+nonbond_params < NB_2   NB_2    1       0.0             0.0021767
+nonbond_params < NB_1   NB_2    1       0.0              0.0021767
+
+3. The dihedrals are modified using Lavi's script
+4. To run simulation using GROMACS:
+
+#generating cubic box with distance 1 nm from all sides from the solute
+
+gmx editconf -f hydr.gro -o newbox.gro -c -d 1.0 -bt cubic
+
+gmx editconf -f hydr.gro -c -d 200 -o hydr.gro -bt cubic
+
+#energy minimization
+
+gmx grompp -f hydr.mdp -c newbox.gro -p hydr.top -o hydr.tpr -maxwarn 1
+
+#running simulation
+
+gmx mdrun -s hydr.tpr -noddcheck -v -deffnm hydr
+
+gmx mdrun -s hydr.tpr -noddcheck -v -deffnm minim -table table.xvg -tablep table.xvg -pin on -gpu_id 01 -ntmpi 2 -ntomp 8 -nb gpu -bonded gpu 
+
+
+****will use 2 MPI threads, 8 OMP threads
+****bonded and non-bonded interactions will be calculated using gpu
+
+$$$$$$$$$$$$ showing the following error
+
+One or more atoms moved too far between two domain decomposition steps.
+This usually means that your system is not well equilibrated
+
