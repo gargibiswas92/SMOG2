@@ -130,9 +130,13 @@ mdrun -s run.tpr -noddcheck -table table.xvg -tablep table.xvg
 # A different approach of running simulation
 
 gmx editconf -f pts150.gro -o newbox.gro -c -d 1.0 -bt cubic
-gmx grompp -f minim.mdp -c newbox.gro -p pts150.top -o minim.tpr -maxwarn 1 
+  
+gmx grompp -f minim.mdp -c newbox.gro -p pts150.top -o minim.tpr -maxwarn 1
+  
 gmx mdrun -s minim.tpr -noddcheck -v -deffnm minim
-gmx grompp -f md.mdp -c minim.gro -p pts150.top -o md.tpr -maxwarn 1 
+  
+gmx grompp -f md.mdp -c minim.gro -p pts150.top -o md.tpr -maxwarn 1
+  
 gmx mdrun -s md.tpr -deffnm mdrun_pts150 -table table.xvg -tablep table.xvg -pin on -gpu_id 01 -ntmpi 2 -ntomp 8 -nb gpu -bonded gpu
 
 #after running a simulation
