@@ -139,7 +139,7 @@ gmx grompp -f md.mdp -c minim.gro -p pts150.top -o md.tpr -maxwarn 1
   
 gmx mdrun -s md.tpr -deffnm mdrun_pts150 -table table.xvg -tablep table.xvg -pin on -gpu_id 01 -ntmpi 2 -ntomp 8 -nb gpu -bonded gpu
 
-#after running a simulation
+# After running a simulation
 
 trjconv -s run.tpr -f traj.xtc -o mdnoPBC.xtc -pbc mol -center
 
